@@ -27,12 +27,12 @@ jobs:
       uses: hashicorp/setup-terraform@v1
 
     - name: Add .tfvars file
-        uses: mobiledevops/secret-to-file-action@v1
-        with:
-          base64-encoded-secret: ${{ secrets.TFVARS }}
-          filename: ".tfvars"
-          is-executable: false
-          working-directory: "./"
+      uses: mobiledevops/secret-to-file-action@v1
+      with:
+        base64-encoded-secret: ${{ secrets.TFVARS }}
+        filename: ".tfvars"
+        is-executable: false
+        working-directory: "./"
 
     - name: Terraform Init
       run: terraform init
