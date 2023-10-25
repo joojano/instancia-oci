@@ -1,0 +1,44 @@
+name: 'Terraform'
+
+on:
+  push:
+    branches: [ "master" ]
+  schedule:
+    - cron: '*/15 * * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    environment: production
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Add .tfvars file
+        uses: mobiledevops/secret-to-file-action@v1
+        with:
+          base64-encoded-secret: ${{ secrets.TFVARS }}
+          filename: ".tfvars"
+          is-executable: false
+          working-directory: "./"
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Plan
+      run: terraform plan -var-file=.tfvars
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve -var-file=.tfvars
